@@ -2,6 +2,7 @@ import unittest
 import tweepy
 import requests
 import json
+import twitter_info
 
 ## SI 206 - HW
 ## COMMENT WITH:
@@ -63,13 +64,28 @@ api = tweepy.API(auth, parser=tweepy.parsers.JSONParser())
 #### Recommended order of tasks: ####
 ## 1. Set up the caching pattern start -- the dictionary and the try/except 
 ## 		statement shown in class.
+cache_fname = "twitter_results.txt"
+
+try:
+	cache_file = open(cache_fname, 'r')
+	cache_contents = cache_file.read()
+	cache_diction = json.loads(cache_contents)
+	cache_file.close()
+except:
+	cache_diction = {}
 
 
 
 ## 2. Write a function to get twitter data that works with the caching pattern, 
 ## 		so it either gets new data or caches data, depending upon what the input 
 ##		to search for is. 
+def add_tweet():
+	dumped_json_cache = json.dumps(cache_diction)
+	fw = open(cache_fname, 'w')
+	fw.write(dumped_json_cache)
+	fw.close()
 
+def get_tweet():
 
 
 ## 3. Using a loop, invoke your function, save the return value in a variable, and explore the 
