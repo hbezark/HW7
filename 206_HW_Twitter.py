@@ -79,37 +79,54 @@ except:
 ## 		so it either gets new data or caches data, depending upon what the input 
 ##		to search for is. 
 def get_tweet(search_term):
-    if search_term in cache_diction:
-        print("using cache")
-        return (cache_diction[search_term])
-    else:
-        print("fetching")
-        results = api.search(search_term)
+    #if search_term in cache_diction:
+        #print("using cache")
+        #return (cache_diction[search_term])
+    #else:
+        #print("fetching")
+        #results = api.search(search_term)
         
-        json_data = json.dumps({keyword: search_term})
-        cache_write = open("twitter_results.json", 'w')
-        cache_write.write(json_data)
-        cache_write.close
-        return (tweets)
-
+        #json_data = json.dumps({keyword: search_term})
+        #cache_write = open("twitter_results.json", 'w')
+        #cache_write.write(json_data)
+        #cache_write.close
+        #return (tweets)
+    if search_term in cache_diction:
+        print ('using cache')
+        return (cache_diction)
+    else:
+        print ('fetching')
+        results = api.search(q=search_term)
+        cache_diction[search_term] = results
+        dumped_json_cache = json.dumps(cache_diction)
+        cache_file = open('cache_fname', 'w')
+        cache_file.write(dumped_json_cache)
+        cache_file.close()
+        return cache_diction[search_term]
 
 ## 3. Using a loop, invoke your function, save the return value in a variable, and explore the 
 ##		data you got back!
-x = 0
-while x<3:
-    keyword = input('Enter tweet term: ')
+#x = 0
+#while x<3:
+    #keyword = input('Enter tweet term: ')
+    #tweet_data = get_tweet(search_term)
+    #for tweet in tweet_data['statuses'][:5]:
+        #print ('TEXT: ', tweet['text'])
+        #print ('CREATED AT: ', tweet['created_at'])
+        #print ('\n\n')
+    #x = 1
+    #print (x)
+for num in range(3):
+    user_input = input('Enter Tweet term: ')
+    search_term = str(user_input)
     tweet_data = get_tweet(search_term)
-    for tweet in tweet_data['statuses'][:5]:
-        print ('TEXT: ', tweet['text'])
-        print ('CREATED AT: ', tweet['created_at'])
-        print ('\n\n')
-    x = 1
-    print (x)
-
 ## 4. With what you learn from the data -- e.g. how exactly to find the 
 ##		text of each tweet in the big nested structure -- write code to print out 
 ## 		content from 5 tweets, as shown in the linked example.
-
+    for tweet in tweet_data['statuses'][:5]:
+        print('TEXT: {}'.format(tweet['text']))
+        print('CREATED AT: {}'.format(tweet['created_at']))
+        print('\n')
 
 
 
