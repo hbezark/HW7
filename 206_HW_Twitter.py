@@ -7,7 +7,7 @@ import twitter_info
 ## SI 206 - HW
 ## COMMENT WITH:
 ## Your section day/time: Thursday 3-4pm
-## Any names of people you worked with on this assignment:
+## Any names of people you worked with on this assignment: Emma Welch and Olivia Gardella
 
 
 ## Write code that uses the tweepy library to search for tweets with three different phrases of the 
@@ -79,55 +79,43 @@ except:
 ## 		so it either gets new data or caches data, depending upon what the input 
 ##		to search for is. 
 def get_tweet(search_term):
-    #if search_term in cache_diction:
-        #print("using cache")
-        #return (cache_diction[search_term])
-    #else:
-        #print("fetching")
-        #results = api.search(search_term)
-        
-        #json_data = json.dumps({keyword: search_term})
-        #cache_write = open("twitter_results.json", 'w')
-        #cache_write.write(json_data)
-        #cache_write.close
-        #return (tweets)
-    if search_term in cache_diction:
-        print ('using cache')
-        return (cache_diction)
-    else:
-        print ('fetching')
-        results = api.search(q=search_term)
-        cache_diction[search_term] = results
-        dumped_json_cache = json.dumps(cache_diction)
-        cache_file = open('cache_fname', 'w')
-        cache_file.write(dumped_json_cache)
-        cache_file.close()
+    if search_term in cache_diction: #Checks if the search term is in the cached file
+        print("using cache") #If the search term has already been cached, it uses the data in the file and returns that
         return cache_diction[search_term]
+    else:
+        print("fetching") #If the search term is not in the cached file, it gets the data from Twitter
+        results = api.search(search_term)
+        try:
+            cache_diction[search_term] = json.dumps(results)
+            dumped_json_cache = json.dumps(cache_diction)
+            fw = open(cache_fname, 'w')
+            fw.write(dumped_json_cache)
+            fw.close()
+            return cache_diction[search_term]
+        except:
+            print("Wasn't in cache and wasn't in search either") #If the search term was not in the cached file or on Twitter, this prints out
+            return None 
+
 
 ## 3. Using a loop, invoke your function, save the return value in a variable, and explore the 
 ##		data you got back!
-#x = 0
-#while x<3:
-    #keyword = input('Enter tweet term: ')
-    #tweet_data = get_tweet(search_term)
-    #for tweet in tweet_data['statuses'][:5]:
-        #print ('TEXT: ', tweet['text'])
-        #print ('CREATED AT: ', tweet['created_at'])
-        #print ('\n\n')
-    #x = 1
-    #print (x)
-for num in range(3):
-    user_input = input('Enter Tweet term: ')
-    search_term = str(user_input)
-    tweet_data = get_tweet(search_term)
+c = 0
+while c < 3: #Asks users to enter a tweet term three times
+    tweet_term = input('Enter Tweet term: ') #Asks the user to input a search term
+    if len(tweet_term) < 1: break
+    data = get_tweet(tweet_term) #Data is a dictionary
+    c += 1
+    data_dict = json.loads(data)
+
 ## 4. With what you learn from the data -- e.g. how exactly to find the 
 ##		text of each tweet in the big nested structure -- write code to print out 
 ## 		content from 5 tweets, as shown in the linked example.
-    for tweet in tweet_data['statuses'][:5]:
-        print('TEXT: {}'.format(tweet['text']))
-        print('CREATED AT: {}'.format(tweet['created_at']))
-        print('\n')
-
+    for tweet in data_dict['statuses'][0:5]: #Print out content from five tweets
+        text = tweet['text']
+        created_at = tweet['created_at']
+        print('TEXT:', text) #Prints out the text of the tweet
+        print('CREATED AT:', created_at) #Prints out when the tweet was created
+        print('\n') 
 
 
 
